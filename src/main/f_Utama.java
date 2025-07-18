@@ -22,7 +22,6 @@ public class f_Utama extends javax.swing.JFrame {
         pDropDown.setVisible(false);
 
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -56,6 +55,11 @@ public class f_Utama extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         p_kiri.setBackground(new java.awt.Color(102, 102, 255));
 
@@ -337,28 +341,28 @@ public class f_Utama extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bKatProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bKatProdukActionPerformed
-         pContent.removeAll();
+        pContent.removeAll();
         pContent.add(new p_KategoriProduk());
         pContent.repaint();
         pContent.revalidate();
     }//GEN-LAST:event_bKatProdukActionPerformed
 
     private void bLaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLaporanActionPerformed
-         // Cek apakah panel dropdown sedang terlihat
-    if (pDropDown.isVisible()) {
-        pDropDown.setVisible(false);  // Sembunyikan
-    } else {
-        pDropDown.setVisible(true);   // Tampilkan
-    }
+        // Cek apakah panel dropdown sedang terlihat
+        if (pDropDown.isVisible()) {
+            pDropDown.setVisible(false);  // Sembunyikan
+        } else {
+            pDropDown.setVisible(true);   // Tampilkan
+        }
     }//GEN-LAST:event_bLaporanActionPerformed
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
         // TODO add your handling code here:
-        int pilihan =  JOptionPane.showConfirmDialog(null, 
-            "Apakah Anda yakin ingin keluar?",
-            "Konfirmasi",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
+        int pilihan = JOptionPane.showConfirmDialog(null,
+                "Apakah Anda yakin ingin keluar?",
+                "Konfirmasi",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
         );
 
         if (pilihan == JOptionPane.YES_OPTION) {
@@ -366,7 +370,7 @@ public class f_Utama extends javax.swing.JFrame {
             System.exit(0);
         } else {
             System.out.println("Aksi dibatalkan.");
-        } 
+        }
     }//GEN-LAST:event_bLogoutActionPerformed
 
     private void bSubMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSubMenu2ActionPerformed
@@ -377,7 +381,7 @@ public class f_Utama extends javax.swing.JFrame {
     }//GEN-LAST:event_bSubMenu2ActionPerformed
 
     private void bProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bProdukActionPerformed
-         pContent.removeAll();
+        pContent.removeAll();
         pContent.add(new p_stokProduk());
         pContent.repaint();
         pContent.revalidate();
@@ -416,7 +420,13 @@ public class f_Utama extends javax.swing.JFrame {
         pContent.revalidate();
     }//GEN-LAST:event_bSubMenu1ActionPerformed
 
-   
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        pContent.removeAll();
+        pContent.add(new p_Dashboard());
+        pContent.repaint();
+        pContent.revalidate();
+    }//GEN-LAST:event_formWindowOpened
+
     /**
      * @param args the command line arguments
      */

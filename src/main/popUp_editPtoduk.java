@@ -23,6 +23,7 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
      */
     public popUp_editPtoduk() {
         initComponents();
+        comboKategori();
     }
     
     void reset(){
@@ -69,7 +70,7 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
            //koosng, tidak ada penanganan
        }
        //kosongkan pilihan defaylt CBox
-       c_kategori.setSelectedItem(null);
+       c_kategori.setSelectedItem(0);
     }
     
     String idKategori(String namaKategori){
@@ -326,7 +327,7 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Data berhasil disimpan");
         } catch (SQLException sQLException) {
             //tampilkan pesan error jika gagal menyimpan
-            JOptionPane.showMessageDialog(null, "Data gagal disimpan!");
+            JOptionPane.showMessageDialog(null, "Data gagal disimpan!" + sQLException);
             System.out.println(sQLException);
         } 
         reset();
