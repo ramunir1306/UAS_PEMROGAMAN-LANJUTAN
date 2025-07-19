@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import main.koneksi;
+import static main.popUp_editPtoduk.t_idProduk;
 /**
  *
  * @author HP
@@ -20,6 +22,7 @@ public class p_editDataKaryawan extends javax.swing.JPanel {
      */
     public p_editDataKaryawan() {
         initComponents();
+        autonumber();
      
     }
     
@@ -44,14 +47,14 @@ public class p_editDataKaryawan extends javax.swing.JPanel {
     }
    
     void reset(){
-        t_idUser.setText(null);
+        autonumber();
         t_namaUser.setText(null);
         t_alamat.setText(null);
         t_noHP.setText(null);
         c_role.setSelectedItem(null);
         t_pw.setText(null);
         //aktifkan pengeditan id_user
-        t_idUser.setEditable(true);
+       
     }
     
 
@@ -128,7 +131,7 @@ public class p_editDataKaryawan extends javax.swing.JPanel {
 
         t_pw.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        c_role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Owner", "Admin", " " }));
+        c_role.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "owner", "kasir" }));
         c_role.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         b_tambah.setBackground(new java.awt.Color(51, 204, 0));
@@ -318,7 +321,7 @@ public class p_editDataKaryawan extends javax.swing.JPanel {
         
         //Query SQL
         try {
-            String sql = "INSERT INTO user(id_user, nama_user, alamat,no_hp, password, role)"
+            String sql = "INSERT INTO user(id_user, nama, alamat,no_hp, password, role)"
                     +"VALUES (?,?,?,?,md5(?),?)";
             Connection con = koneksi.konek();//buat koneksi ke DB
             //siapkan query SQL utk dieksekusi
@@ -353,7 +356,7 @@ public class p_editDataKaryawan extends javax.swing.JPanel {
         
         //Query SQL
         try {
-            String sql = "UPDATE user SET nama_user=?, alamat=?, no_hp=?, password=md5(?), role=?"
+            String sql = "UPDATE user SET nama=?, alamat=?, no_hp=?, password=md5(?), role=?"
                     +"WHERE id_user=?";
             Connection con = koneksi.konek();//buat koneksi ke DB
             //siapkan query SQL utk dieksekusi
@@ -449,4 +452,38 @@ public class p_editDataKaryawan extends javax.swing.JPanel {
     private javax.swing.JTextField t_noHP;
     private javax.swing.JTextField t_pw;
     // End of variables declaration//GEN-END:variables
+
+private void autonumber() {
+        try {
+            java.sql.Connection conn = koneksi.konek();
+            java.sql.Statement statement = conn.createStatement();
+            String sql = "SELECT * FROM user ORDER BY id_user DESC";
+            java.sql.ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                String Id_Pelanggan = resultSet.getString("id_user").substring(2);
+                String IP = "" + (Integer.parseInt(Id_Pelanggan) + 1);
+                String Nol = "";
+
+                if (IP.length() == 1) {
+                    Nol = "000";
+                } else if (IP.length() == 2) {
+                    Nol = "00";
+                } else if (IP.length() == 3) {
+                    Nol = "";
+                }
+
+                t_idUser.setText("RL" + Nol + IP);
+            } else {
+                t_idUser.setText("RL0001");
+            }
+            resultSet.close();
+            statement.close();
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("autonumber error");
+        }
+        t_idUser.setEditable(false);
+    }
+
 }
+

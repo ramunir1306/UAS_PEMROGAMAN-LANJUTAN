@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import static main.f_Utama.pContent;
 
 
 /**
@@ -23,30 +25,30 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
      */
     public popUp_editPtoduk() {
         initComponents();
+        comboKategori();
+        autonumber();
+        reset();
     }
     
     void reset(){
-        t_idProduk.setText(null);
+        autonumber();
         c_kategori.setSelectedItem(null);
         t_namaProduk2.setText(null);
         t_harga.setText(null);
-        t_stok.setText(null);
-        
-        //Aktifkan pengeditan pd textField kode Jurusan
-        t_idProduk.setEditable(true);
+        t_stok.setText(null);        
     }
     
-    public void tampildata(String id_produk, String kategori, String nama,  String harga,
-    String stok){
-     t_idProduk.setText(id_produk);
-     c_kategori.setSelectedItem(kategori);
-     t_namaProduk2.setText(nama);
-     t_harga.setText(harga);
-     t_stok.setText(stok);
-     
-      //Nonaktifkan pengeditan pd textField kode Jurusan
-        t_idProduk.setEditable(false);
-    }
+//    public void tampildata(String id_produk, String kategori, String nama,  String harga,
+//    String stok){
+//     t_idProduk.setText(id_produk);
+//     c_kategori.setSelectedItem(kategori);
+//     t_namaProduk2.setText(nama);
+//     t_harga.setText(harga);
+//     t_stok.setText(stok);
+//     
+//      //Nonaktifkan pengeditan pd textField kode Jurusan
+//        t_idProduk.setEditable(false);
+//    }
 
     public void ubahProduk(){
         b_tambah.setVisible(false);
@@ -69,7 +71,7 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
            //koosng, tidak ada penanganan
        }
        //kosongkan pilihan defaylt CBox
-       c_kategori.setSelectedItem(null);
+       c_kategori.setSelectedItem(0);
     }
     
     String idKategori(String namaKategori){
@@ -89,6 +91,28 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
            return "";
        } 
        return "";
+    }
+    String id_produk(String namaProduk){
+        try {
+            String sql = "SELECT * FROM kategori WHERE nama_kategori= ?";
+            Connection conn = koneksi.konek();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, namaProduk);
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getString("id_kategori");
+            }
+        } catch (SQLException sQLException) {
+            return""; 
+        }
+        return "";
+    }
+    
+    void autoReload(){
+        pContent.removeAll();
+        pContent.add(new p_stokProduk());
+        pContent.repaint();
+        pContent.revalidate();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -128,6 +152,11 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
         jLabel1.setText("Nama Produk");
 
         c_kategori.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        c_kategori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                c_kategoriActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -135,6 +164,11 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
 
         t_harga.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         t_harga.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        t_harga.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                t_hargaKeyReleased(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -150,6 +184,11 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
 
         t_namaProduk2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         t_namaProduk2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        t_namaProduk2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_namaProduk2ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -301,24 +340,26 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
 
     private void b_tambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_tambahActionPerformed
           //ambil input dari textField kode dan nama jurusan
-        String id_produk = t_idProduk.getText();
-        String kategori = idKategori(c_kategori.getSelectedItem().toString());
+        
+          
+          String id_produk = t_idProduk.getText();
+        String kategori = id_produk(c_kategori.getSelectedItem().toString());
         String nama_produk = t_namaProduk2.getText();
         String harga = t_harga.getText();
         String stok = t_stok.getText();
         
         //Query SQL
         try {
-            String sql = "INSERT INTO produk(id_produk, nama_produk, id_kategori, harga, stok)"
-                    + "SET (?,?,?,?,?)";
+            String sql = "INSERT INTO produk(id_produk, nama_produk, id_kategori, stok, harga)"
+                    + "VALUES (?,?,?,?,?)";
             Connection con = koneksi.konek();//buat koneksi ke DB
             //siapkan query SQL utk dieksekusi
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, id_produk);
-            ps.setString(2, kategori);
-            ps.setString(3, nama_produk);
-            ps.setString(4, harga);
-            ps.setString(5, stok);
+            ps.setString(2, nama_produk);
+            ps.setString(3, kategori);
+            ps.setString(4, stok);
+            ps.setString(5, harga);
             //jalankan query
             ps.execute();
 
@@ -326,32 +367,36 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Data berhasil disimpan");
         } catch (SQLException sQLException) {
             //tampilkan pesan error jika gagal menyimpan
-            JOptionPane.showMessageDialog(null, "Data gagal disimpan!");
+            JOptionPane.showMessageDialog(null, "Data gagal disimpan!"+ sQLException);
             System.out.println(sQLException);
         } 
         reset();
+        dispose();
+        autoReload();
+        autonumber();
+        
     }//GEN-LAST:event_b_tambahActionPerformed
 
     private void b_ubahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_ubahActionPerformed
          //ambil input dari textField kode dan nama jurusan
         String id_produk = t_idProduk.getText();
-        String kategori = idKategori(c_kategori.getSelectedItem().toString());
+        String kategori = id_produk(c_kategori.getSelectedItem().toString());
         String nama_produk = t_namaProduk2.getText();
         String harga = t_harga.getText();
         String stok = t_stok.getText();
         
         //Query SQL
         try {
-            String sql = "UPDATE produk SET id_produk=?, kategori=?, nama_produk=?, stok=?, harga=?"
+            String sql = "UPDATE produk SET id_kategori=?, nama_produk=?, stok=?, harga=?"
                     +"WHERE id_produk=?";
             Connection con = koneksi.konek();//buat koneksi ke DB
             //siapkan query SQL utk dieksekusi
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, id_produk);
-            ps.setString(2, kategori);
-            ps.setString(3, nama_produk);
+            ps.setString(1, kategori);
+            ps.setString(2, nama_produk);
+            ps.setString(3, stok);
             ps.setString(4, harga);
-            ps.setString(5, stok);
+            ps.setString(5, id_produk);
             //jalankan query
             ps.execute();
 
@@ -363,6 +408,10 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
             System.out.println(sQLException);
         } 
         reset();
+        dispose();
+        autoReload();
+        autonumber();
+        
     }//GEN-LAST:event_b_ubahActionPerformed
 
     private void b_hapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_hapusActionPerformed
@@ -392,7 +441,23 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
             System.out.println(sQLException);
         } 
         reset();
+        dispose();
+        autoReload();
+        autonumber();
     }//GEN-LAST:event_b_hapusActionPerformed
+
+    private void t_namaProduk2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_namaProduk2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_namaProduk2ActionPerformed
+
+    private void c_kategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_kategoriActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_c_kategoriActionPerformed
+
+    private void t_hargaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_hargaKeyReleased
+        // TODO add your handling code here:
+        formatUangIDR(t_harga);
+    }//GEN-LAST:event_t_hargaKeyReleased
 
     /**
      * @param args the command line arguments
@@ -436,7 +501,7 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
     private javax.swing.JButton b_reset1;
     private javax.swing.JButton b_tambah;
     private javax.swing.JButton b_ubah;
-    private javax.swing.JComboBox<String> c_kategori;
+    public static javax.swing.JComboBox<String> c_kategori;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -444,9 +509,54 @@ public class popUp_editPtoduk extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JPanel p_dasar;
-    private javax.swing.JTextField t_harga;
-    private javax.swing.JTextField t_idProduk;
-    private javax.swing.JTextField t_namaProduk2;
-    private javax.swing.JTextField t_stok;
+    public static javax.swing.JTextField t_harga;
+    public static javax.swing.JTextField t_idProduk;
+    public static javax.swing.JTextField t_namaProduk2;
+    public static javax.swing.JTextField t_stok;
     // End of variables declaration//GEN-END:variables
+private void autonumber() {
+        try {
+            java.sql.Connection conn = koneksi.konek();
+            java.sql.Statement statement = conn.createStatement();
+            String sql = "SELECT * FROM produk ORDER BY id_produk DESC";
+            java.sql.ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                String Id_Pelanggan = resultSet.getString("id_produk").substring(2);
+                String IP = "" + (Integer.parseInt(Id_Pelanggan) + 1);
+                String Nol = "";
+
+                if (IP.length() == 1) {
+                    Nol = "000";
+                } else if (IP.length() == 2) {
+                    Nol = "00";
+                } else if (IP.length() == 3) {
+                    Nol = "";
+                }
+
+                t_idProduk.setText("IP" + Nol + IP);
+            } else {
+                t_idProduk.setText("IP0001");
+            }
+            resultSet.close();
+            statement.close();
+        } catch (Exception e) {
+            System.out.println("autonumber error");
+        }
+        t_idProduk.setEditable(false);
+    }
+private void formatUangIDR(JTextField field) {
+        String input = field.getText();
+        if (!input.isEmpty()) {
+            input = input.replaceAll("[^\\d]", ""); // Hapus karakter selain angka
+            try {
+                long value = Long.parseLong(input);
+                field.setText("Rp " + String.format("%,d", value).replace(',', '.'));
+            } catch (NumberFormatException ex) {
+                field.setText("Rp 0");
+            }
+        } else {
+            field.setText("Rp 0");
+        }
+    }
+
 }

@@ -56,6 +56,11 @@ public class f_Utama extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         p_kiri.setBackground(new java.awt.Color(102, 102, 255));
 
@@ -334,6 +339,7 @@ public class f_Utama extends javax.swing.JFrame {
         getContentPane().add(p_kanan, java.awt.BorderLayout.CENTER);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void bKatProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bKatProdukActionPerformed
@@ -416,6 +422,14 @@ public class f_Utama extends javax.swing.JFrame {
         pContent.revalidate();
     }//GEN-LAST:event_bSubMenu1ActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        pContent.removeAll();
+        pContent.add(new p_Dashboard());
+        pContent.repaint();
+        pContent.revalidate();
+    }//GEN-LAST:event_formWindowOpened
+
    
     /**
      * @param args the command line arguments
@@ -468,13 +482,13 @@ public class f_Utama extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JPanel pContent;
+    public static javax.swing.JPanel pContent;
     private javax.swing.JPanel pDropDown;
     private javax.swing.JPanel p_atas;
     private javax.swing.JPanel p_kanan;
     private javax.swing.JPanel p_kiri;
     private javax.swing.JPanel p_logo;
     private javax.swing.JPanel p_sideBar;
-    private javax.swing.JLabel tUserLogin;
+    public static javax.swing.JLabel tUserLogin;
     // End of variables declaration//GEN-END:variables
 }

@@ -55,7 +55,7 @@ public class p_kategoriuser extends javax.swing.JPanel {
                //simpan data user 
                String [] data = {
                    rs.getString("id_user"),
-                   rs.getString("nama_user"),
+                   rs.getString("nama"),
                    rs.getString("alamat"),
                    rs.getString("no_hp"),
                    rs.getString("role"),
@@ -113,6 +113,16 @@ public class p_kategoriuser extends javax.swing.JPanel {
         });
 
         t_cariKaryawan.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Cari Nama Karyawan", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP));
+        t_cariKaryawan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_cariKaryawanActionPerformed(evt);
+            }
+        });
+        t_cariKaryawan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_cariKaryawanKeyTyped(evt);
+            }
+        });
 
         table_dataKaryawan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -236,6 +246,15 @@ public class p_kategoriuser extends javax.swing.JPanel {
             
         }
     }//GEN-LAST:event_table_dataKaryawanMouseClicked
+
+    private void t_cariKaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_cariKaryawanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_t_cariKaryawanActionPerformed
+
+    private void t_cariKaryawanKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_cariKaryawanKeyTyped
+        // TODO add your handling code here:
+        load_table_user();
+    }//GEN-LAST:event_t_cariKaryawanKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

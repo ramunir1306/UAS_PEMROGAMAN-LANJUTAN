@@ -4,6 +4,15 @@
  */
 package main;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import static main.popUp_editPtoduk.c_kategori;
+
 /**
  *
  * @author HP
@@ -15,7 +24,110 @@ public class popUp_cariProduk extends javax.swing.JFrame {
      */
     public popUp_cariProduk() {
         initComponents();
+        load_table_produk();
     }
+    
+    void load_table_produk() {
+        DefaultTableModel model = new DefaultTableModel();
+
+        //menambahkan kolom ke dlm tabel
+        model.addColumn("No");
+        model.addColumn("ID produk");
+        model.addColumn("Nama produk");
+        model.addColumn("Kategori");
+        model.addColumn("Stok");
+        model.addColumn("Harga");
+
+       
+        int no = 1;
+        //Query SL utk mengambil semua data dari tabel
+        String sql = "SELECT p.id_produk, p.nama_produk, k.nama_kategori, p.stok, p.harga "
+                + "FROM produk p, kategori k WHERE p.id_kategori=k.id_kategori";
+
+        try {
+            Connection con = koneksi.konek();//membuka koneksi ke DB
+            //membut Statement utk menjalankan query SQL
+            Statement st = con.createStatement();
+            //menjalankan query
+            ResultSet rs = st.executeQuery(sql);
+
+            //melakukan iterasi utk setiap baris data
+            while (rs.next()) {
+
+                //simpan data produk 
+                String[] data = {
+                    rs.getString("id_produk"),
+                    rs.getString("nama_produk"),
+                    rs.getString("nama_kategori"),
+                    rs.getString("stok"),
+                    rs.getString("harga")
+                };
+               
+                //membuat array berisi data satu baris
+                Object[] baris = {
+                    no++, data[0], data[1], data[2], data[3], data[4]};
+                //menambahkan array ke dlm tabel
+                model.addRow(baris);
+            }
+        } catch (SQLException sQLException) {
+            //menampilkan pesan error
+            JOptionPane.showMessageDialog(null, sQLException);
+            System.out.println(sQLException);
+        }
+        table_detailTransaksi.setModel(model);
+    }
+    
+    void cari() {
+        DefaultTableModel model = new DefaultTableModel();
+
+        //menambahkan kolom ke dlm tabel
+        model.addColumn("No");
+        model.addColumn("ID produk");
+        model.addColumn("Nama produk");
+        model.addColumn("id kategori");
+        model.addColumn("Stok");
+        model.addColumn("Harga");
+
+        
+        int no = 1;
+        //Query SL utk mengambil semua data dari tabel
+        String sql = "SELECT * FROM produk WHERE nama_produk LIKE '%" + t_namaProduk.getText() + "%' "
+                + "OR nama_produk LIKE '%" + t_namaProduk.getText() + "%'";
+
+        try {
+            Connection con = koneksi.konek();//membuka koneksi ke DB
+            //membut Statement utk menjalankan query SQL
+            Statement st = con.createStatement();
+            //menjalankan query
+            ResultSet rs = st.executeQuery(sql);
+
+            //melakukan iterasi utk setiap baris data
+            while (rs.next()) {
+
+                //simpan data produk 
+                String[] data = {
+                    rs.getString("id_produk"),
+                    rs.getString("nama_produk"),
+                    rs.getString("id_kategori"),
+                    rs.getString("stok"),
+                    rs.getString("harga")
+                };
+                
+                //membuat array berisi data satu baris
+                Object[] baris = {
+                    no++, data[0], data[1], data[2], data[3], data[4]};
+                //menambahkan array ke dlm tabel
+                model.addRow(baris);
+            }
+        } catch (SQLException sQLException) {
+            //menampilkan pesan error
+            JOptionPane.showMessageDialog(null, sQLException);
+            System.out.println(sQLException);
+        }
+        table_detailTransaksi.setModel(model);
+    }
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -31,11 +143,10 @@ public class popUp_cariProduk extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         t_namaProduk = new javax.swing.JTextField();
-        t_kategori = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         table_detailTransaksi = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -46,8 +157,16 @@ public class popUp_cariProduk extends javax.swing.JFrame {
         jLabel1.setText("Tanggal Transaksi");
 
         t_namaProduk.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Nama Produk"));
-
-        t_kategori.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Kategori"));
+        t_namaProduk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                t_namaProdukActionPerformed(evt);
+            }
+        });
+        t_namaProduk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                t_namaProdukKeyTyped(evt);
+            }
+        });
 
         table_detailTransaksi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -57,6 +176,11 @@ public class popUp_cariProduk extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Title 5"
             }
         ));
+        table_detailTransaksi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                table_detailTransaksiMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(table_detailTransaksi);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -66,13 +190,14 @@ public class popUp_cariProduk extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(12, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(t_namaProduk, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(48, 48, 48)
-                        .addComponent(t_kategori, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -80,10 +205,8 @@ public class popUp_cariProduk extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(t_namaProduk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(t_kategori, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(56, 56, 56)
+                .addComponent(t_namaProduk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(78, Short.MAX_VALUE))
         );
@@ -95,7 +218,7 @@ public class popUp_cariProduk extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,6 +243,31 @@ public class popUp_cariProduk extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void t_namaProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_namaProdukActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_t_namaProdukActionPerformed
+
+    private void t_namaProdukKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_t_namaProdukKeyTyped
+        // TODO add your handling code here:
+        cari();
+    }//GEN-LAST:event_t_namaProdukKeyTyped
+
+    private void table_detailTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table_detailTransaksiMouseClicked
+         //ambil indeks baris yang di klik
+        int barisDipilih = table_detailTransaksi.rowAtPoint(evt.getPoint());
+        
+        //ambil nilai kolom kode dan nama jurusan
+        String id_kategori =table_detailTransaksi.getValueAt(barisDipilih, 3).toString();
+        String nama_kategori = table_detailTransaksi.getValueAt(barisDipilih, 5).toString();
+        
+        //tampilkan kode dan nama jurusaan ke textField 
+        p_Transaksi.t_NamaProduk.setText(id_kategori);
+        p_Transaksi.t_HargaSatuan.setText(nama_kategori);
+        dispose();
+        //Nonaktifkan pengeditan pd textField id kategori
+    }//GEN-LAST:event_table_detailTransaksiMouseClicked
 
     /**
      * @param args the command line arguments
@@ -163,7 +311,6 @@ public class popUp_cariProduk extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField t_kategori;
     private javax.swing.JTextField t_namaProduk;
     private javax.swing.JTable table_detailTransaksi;
     // End of variables declaration//GEN-END:variables

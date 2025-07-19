@@ -104,9 +104,7 @@
                               <Component id="b_tambah" min="-2" pref="111" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="t_cariProduk" min="-2" pref="291" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="b_cari" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="89" max="-2" attributes="0"/>
                               <Component id="b_reset" min="-2" pref="113" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jScrollPane1" max="32767" attributes="0"/>
@@ -127,7 +125,6 @@
                                   <Component id="b_tambah" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="t_cariProduk" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="b_reset" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="b_cari" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                               <Component id="jScrollPane1" min="-2" pref="403" max="-2" attributes="0"/>
@@ -186,6 +183,10 @@
                   </Border>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="t_cariProdukActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="t_cariProdukKeyTyped"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
               <AuxValues>
@@ -225,19 +226,6 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cetak"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="b_cari">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="99" green="99" red="99" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Icon/Search.png"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="b_cariActionPerformed"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>

@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+//import static main.popUp_editPtoduk.t_idProduk;
 /**
  *
  * @author HP
@@ -23,14 +24,13 @@ public class p_KategoriProduk extends javax.swing.JPanel {
         initComponents();
         reset();
         load_table_Kategori();
+        autonumber();
     }
     
      //method reset
     void reset(){
-       t_idKategori.setText(null);
+        autonumber();
        t_namaKategori1.setText(null);
-       //aktifkan pengeditan
-       t_idKategori.setEditable(true);
     }
     
     //method load tabel guru
@@ -181,8 +181,9 @@ public class p_KategoriProduk extends javax.swing.JPanel {
                 .addGap(27, 27, 27)
                 .addGroup(p_mainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(p_mainLayout.createSequentialGroup()
-                        .addComponent(b_tambah, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(37, 37, 37)
+                        .addComponent(b_tambah, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(b_ubah, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(b_hapus, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -378,4 +379,36 @@ public class p_KategoriProduk extends javax.swing.JPanel {
     private javax.swing.JTextField t_namaKategori1;
     private javax.swing.JTable table_katProduk;
     // End of variables declaration//GEN-END:variables
+private void autonumber() {
+        try {
+            java.sql.Connection conn = koneksi.konek();
+            java.sql.Statement statement = conn.createStatement();
+            String sql = "SELECT * FROM kategori ORDER BY id_kategori DESC";
+            java.sql.ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                String Id_Pelanggan = resultSet.getString("id_kategori").substring(2);
+                String IP = "" + (Integer.parseInt(Id_Pelanggan) + 1);
+                String Nol = "";
+
+                if (IP.length() == 1) {
+                    Nol = "000";
+                } else if (IP.length() == 2) {
+                    Nol = "00";
+                } else if (IP.length() == 3) {
+                    Nol = "";
+                }
+
+                t_idKategori.setText("PL" + Nol + IP);
+            } else {
+                t_idKategori.setText("PL0001");
+            }
+            resultSet.close();
+            statement.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        t_idKategori.setEditable(false);
+    }
+
+
 }
